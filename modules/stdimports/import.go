@@ -2,12 +2,8 @@ package stdimports
 
 import (
 	// standard Caddy modules
-	_ "github.com/caddyserver/caddy/v2/caddyconfig/caddyfile"
-	_ "github.com/caddyserver/caddy/v2/modules/caddyhttp/standard"
-	_ "github.com/caddyserver/caddy/v2/modules/caddypki"
-	_ "github.com/caddyserver/caddy/v2/modules/caddytls"
-	_ "github.com/caddyserver/caddy/v2/modules/caddytls/distributedstek"
-	_ "github.com/caddyserver/caddy/v2/modules/caddytls/standardstek"
-	_ "github.com/caddyserver/caddy/v2/modules/filestorage"
-	_ "github.com/caddyserver/caddy/v2/modules/logging"
-) 
+	//_ "www-phaeton/v2/caddyconfig/caddyfile"
+	//_ "www-phaeton/v2/modules/caddyhttp/standard"
+	//_ "www-phaeton/v2/modules/filestorage"
+	_ "www-phaeton/v1/modules/logging"
+)
