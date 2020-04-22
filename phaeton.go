@@ -1,5 +1,6 @@
 package main
 
+// git tag -l v1.0.0-b* or git tag -l *beta*
 import (
 	"context"
 	"crypto/tls"
