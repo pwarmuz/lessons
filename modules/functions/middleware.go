@@ -20,7 +20,9 @@ func timingPtr(f func(*[]int) *[]int) func(*[]int) *[]int {
 	}
 }
 
-// Slices are sliceheaders which have a pointer to the location, therefore both of these are the same thing
+// Slices are sliceheaders which have a pointer to the location
+// timingPtr and timingCopy are the same because the pointer is being accessed
+// and slices are references to that pointer
 func timingCopy(f func([]int) []int) func([]int) []int {
 	return func(si []int) []int {
 		start := time.Now()
@@ -31,7 +33,6 @@ func timingCopy(f func([]int) []int) func([]int) []int {
 	}
 }
 
-// Slices are sliceheaders which have a pointer to the location, therefore both of these are the same thing
 func timingBool(f func([]int) []int) func([]int) bool {
 	return func(si []int) bool {
 		start := time.Now()
@@ -42,6 +43,7 @@ func timingBool(f func([]int) []int) func([]int) bool {
 	}
 }
 
+// processSlicerPtr will re-iterate the point that slices are references to pointers
 func processSlicerPtr(iSlices *[]int) *[]int {
 	for i, value := range *iSlices {
 		(*iSlices)[i] = value * 3

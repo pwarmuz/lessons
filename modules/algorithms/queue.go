@@ -2,40 +2,49 @@ package algorithms
 
 import "fmt"
 
+// queue
+// commonly referred to as First In, First Out (FIFO)
+// https://en.wikipedia.org/wiki/FIFO_(computing_and_electronics)
 type queue []int
 
+// Enqueue adds the item to the back of the order
 func (q *queue) Enqueue(i int) {
 	*q = append(*q, i)
 }
 
+// Dequeue removes the item from the front of the order
 func (q *queue) Dequeue() int {
 	// (*q)[n] means [n] is converted to *Point
 	dequeue := (*q)[0]
 	*q = (*q)[1:len(*q)]
 	return dequeue
 }
+
 func (q *queue) String() string {
 	return fmt.Sprint(*q)
 }
 
-// This looks better than the above implementation
-
-type altQueue []int
+// AltQueue
+// This is a alternative implementation pattern
 type AltQueue struct {
-	altQueue
+	intQueue
 }
+type intQueue []int
 
 func (q *AltQueue) Enqueue(i int) {
-	q.altQueue = append(q.altQueue, i)
+	q.intQueue = append(q.intQueue, i)
 }
+
 func (q *AltQueue) Dequeue() int {
-	dequeue := q.altQueue[0]
-	q.altQueue = q.altQueue[1:len(q.altQueue)]
+	dequeue := q.intQueue[0]
+	q.intQueue = q.intQueue[1:len(q.intQueue)]
 	return dequeue
 }
+
 func (q AltQueue) String() string {
-	return fmt.Sprint(q.altQueue)
+	return fmt.Sprint(q.intQueue)
 }
+
 func ExampleQueue() {
 	var q *queue = new(queue)
 	fmt.Println("Queue is first in, first out")

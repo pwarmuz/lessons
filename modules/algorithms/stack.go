@@ -5,6 +5,9 @@ import (
 	"reflect"
 )
 
+// Stack
+// commonly refers to First In, Last Out (FILO) or Last In, First Out(LIFO)
+// https://en.wikipedia.org/wiki/Stack_(abstract_data_type)
 type Stack struct {
 	slice []int
 }
@@ -185,7 +188,7 @@ func ExampleStack() {
 	var mfloat float64
 	mfloat = cint
 
-	fmt.Printf("asdf %s, %f %s", mn, mfloat, myStringy)
+	fmt.Printf("custom string, float, converted string %s, %f %s", mn, mfloat, myStringy)
 	fmt.Println("reflect", reflect.TypeOf(mn).Name(), reflect.TypeOf(mfloat).Name())
 	var another AnotherString
 	another = cstring

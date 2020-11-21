@@ -13,8 +13,7 @@ package main
 // git tag -l v1.0.0-b* or git tag -l *beta*
 import (
 	"fmt"
-	"lessons/modules/conversions"
-	"lessons/modules/functions"
+	"lessons/modules/concurrency"
 )
 
 func main() {
@@ -35,8 +34,11 @@ func main() {
 	//algorithms.ExampleStack()
 	//algorithms.ExampleConversions()
 	//functions.SortingSlice()
-	conversions.ExampleConversionCosts()
-	functions.ExampleByValueAndReference()
+	//conversions.ExampleConversionCosts()
+	//functions.ExampleByValueAndReference()
+	concurrency.ExampleUnbufferedChan()
+	concurrency.ExampleBufferedChan()
+	concurrency.ExampleBufferedChanRoutine()
 
 }
 
