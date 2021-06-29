@@ -1,3 +1,8 @@
+/*
+Lessons will execute any relevant lesson that the programmer wants to see
+Since this comment is a public comment it should be written in proper english with capitalization and punctuation.
+Use these code review comments for guidance in structure and proper go idioms: https://github.com/golang/go/wiki/CodeReviewComments
+*/
 package main
 
 // To upgrade project to v2/
@@ -13,9 +18,23 @@ package main
 // git tag -l v1.0.0-b* or git tag -l *beta*
 import (
 	"fmt"
-	"lessons/modules/concurrency"
+	"lessons/modules/structs"
 )
 
+// Intro Go is a general purpose language intended for systems programming.
+// It is strongly typed.
+// It is statically typed because the types cannot be changed and is most similar to structural typed because it happens at compile time
+//
+// When writing packages include examples https://blog.golang.org/examples as part of documentation
+//
+// OO concepts
+// Encapsulation possible at the package level
+// -- Local retention, protection, and hiding possible with public/private attribute (lower case, capital first letters) and methods
+// Composition through embedding
+// Polymorphism by satisfying Interfaces
+// Inheritance is NOT possible
+// Messaging with Channels
+// Late-binding possible via higher-order-function (function that takes a function as an argument or returns function) and interfaces
 func main() {
 	//fmt.Println("Hello")
 	//fmt.Println(sample.SillyName())
@@ -24,6 +43,7 @@ func main() {
 	fmt.Println("...")
 	//functions.ExampleMiddleware()
 	//functions.ExampleSearchInt()
+	//functions.ExampleSliceExpand()
 	//functions.ExampleSliceExpand()
 	//functions.ExampleMiddleBool()
 	//structs.MethodMath()
@@ -36,10 +56,27 @@ func main() {
 	//functions.SortingSlice()
 	//conversions.ExampleConversionCosts()
 	//functions.ExampleByValueAndReference()
-	concurrency.ExampleUnbufferedChan()
-	concurrency.ExampleBufferedChan()
-	concurrency.ExampleBufferedChanRoutine()
-
+	//concurrency.ExampleUnbufferedChan()
+	//concurrency.ExampleBufferedChan()
+	//concurrency.ExUnbufferedChan()
+	//concurrency.ExTimeOuts()
+	//concurrency.ExampleSimpleTimer()
+	//concurrency.ExampleSimpleTicker()
+	//concurrency.ExWorkerPool()
+	//types.TypeInformation()
+	//algorithms.ExampleAlgoPatterns()
+	//interfaces.ExampleInterface()
+	//types.ExampleSlice()
+	//types.ExamplePrinting()
+	//types.ExampleMinInts()
+	//types.ExampleBytes()
+	//interfaces.ExampleRot13NoStruct()
+	//types.ExampleEmbed()
+	//interfaces.ExampleAssertion()
+	//interfaces.ExampleErrorPanicRecovery()
+	structs.ExamplePointerVsValue()
+	//structs.ExampleImplementation()
+	//types.ExampleSliceAddressPtrs()
 }
 
 func IntMin(a, b int) int {

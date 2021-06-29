@@ -215,5 +215,15 @@ func ExampleByValueAndReference() {
 	fmt.Println(myMap[4])
 	// myMap[3] and myMap[4] show that myMap is able to amend
 	// and retain information in both situations
-	// therefore it is unncessary to pass maps via reference
+	// therefore it is unnecessary to pass maps via reference
+}
+
+// namedResultParameter will accept a location name and return the latitude and longitude of the location or an error
+// this scheme with naming return parameter helps clarify what the function does
+func namedResultParameter(location string) (lat, long int, err error) {
+	loc := len(location) // nonsense logic to demonstrate
+	lat = 1 * loc        // these below values are returned fulfilling the named results
+	long = 2 * loc
+	err = nil
+	return // this part is a naked return
 }

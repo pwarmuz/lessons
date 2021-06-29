@@ -7,7 +7,7 @@ func ExampleLoops() {
 	var inside int
 	for i := 0; i < 10; i++ {
 		// because i is passed by reference
-		// the value will be updated and not redeclared as i
+		// the value will be updated and not re-declared as i
 		// however i is also being assigned to inside
 		// inside will therefore be passed by value
 		inside = i
@@ -16,7 +16,7 @@ func ExampleLoops() {
 	}
 	// notice function() will result i value of 10
 	// because i is incremented to 10 to stop the for loop (i++ is a post increment, go does not support pre increments)
-	// however the inside value remains 9 becaused it assigned within the loop
+	// however the inside value remains 9 because it assigned within the loop
 	function()
 	// calling it a second time to drive the point across
 	function()
@@ -34,7 +34,7 @@ func ExampleLoopsPassedByValue() {
 		insideReference = &i
 		fByReference(&i)
 	}
-	// similiar in concept to the above but i was passed by value into the function
+	// similar in concept to the above but i was passed by value into the function
 	f(inside)
 
 	// passed by reference

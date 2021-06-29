@@ -36,3 +36,56 @@ func (bp byPriority) Less(i, j int) bool {
 	//return len(bp[i]) > len(bp[j])
 	// which makes it cleaner to re-order as above
 }
+
+/*
+	for i:=int32(1); i <= n; i++{
+		if i %3==0 && i %5 ==0{
+			fmt.Println("FizzBuzz")
+		}else if i %3 ==0 {
+			fmt.Println("Fizz")
+		}else if i %5 ==0{
+			fmt.Println("Buzz")
+		}else{
+			fmt.Println(i)
+      }
+	}
+
+	for i:=0; i<len(fixed)-1; i++{
+      reversed[i] = fixed[len(fixed)-i]
+	}
+*/
+
+        //fmt.Println("row", row)
+        lastVal := row[1]
+        if row[1]>n{
+            lastVal = n
+        }
+        for i:= row[0]; i<= lastVal; i++ {
+            summer[i-1] += row[len(row)-1]
+            //fmt.Println("summer", summer)
+            if summer[i-1] >= max{
+                max = summer[i-1]
+            }
+        }
+
+
+		      summer := make([]int32, n+1)
+
+    for _, row := range queries{
+        summer[row[0]-1] += row[2]
+        summer[row[1]] -= row[2]
+    }
+
+    var max int32 = -1
+    var total int32 = 0
+    for _, v := range summer{
+        total += v
+        fmt.Println(total)
+        if total > max {
+            max = total
+        }
+        if total < 0{
+            break
+        }
+    }
+    return int64(max)

@@ -1,3 +1,6 @@
+// Lesson tests is a template for convention and general concepts
+// useful information can be found here https://github.com/golang/go/wiki/TableDrivenTests
+// Each individual module should have some test as illustration
 package main
 
 import (
@@ -6,6 +9,7 @@ import (
 )
 
 // RUN Tests with go test -v  -v is verbose mode
+// -count=1 to clear cache or go clean -testcache && go test...
 func TestIntMinBasic(t *testing.T) {
 	ans := IntMin(2, -2)
 	if ans != -2 {
