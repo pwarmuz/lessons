@@ -3,55 +3,92 @@ package conversions
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 	"time"
 )
 
-// All conversions between typed expressions must be explicitly stated
-// and illegal conversions are caught by the compiler
+// Go language is strongly typed which means you need declare a type implicitly or explicitly
+// All conversions between typed expressions must be explicitly stated and illegal conversions are caught by the compiler
+// It's strict when it comes to types and will report errors during compilation.
 
-// ExampleConversionCosts
+// Constants can be untyped and can be manipulated by assuming a type
+// don't get to clever with this because assigning an untyped float64 constant into a float32 variable for example could cause problems
+// you cannot const a struct e.g. const sl = mystruct{1,2,3}
+
+const (
+	// an untyped constant can be converted into any supporting underlying type
+	// e.g. type myString string could be used on a const CS = "string"
+	// then const CS = "string" could be converted to type anotherString string because they are similar underlying type
+	cstring               = "my string"
+	cint                  = 1
+	cstring2 customString = "hello" // explicit constant customString
+)
+
+type customString string
+
+// converter type pattern
+// most type conversions just change the type of value not memory representation; there free (no runtime cost)
+// - numerical conversions will have runtime cost
+// - conversions with strings because strings are immutable data must be copied
+type converter func(int) string
+
+type myInt int
+
+func cInt(i int) string {
+	mi := myInt(i)
+	return fmt.Sprintf("%d", mi)
+}
+func cFloat32(i int) string {
+	f32 := float32(i)
+	return fmt.Sprintf("%.2f", f32)
+}
+func cFloat64(i int) string {
+	f64 := float64(i)
+	return fmt.Sprintf("%.2f", f64)
+}
+func cString(i int) string {
+	if i > 255 {
+		i = 255
+	}
+	b := byte(i)
+	return string(b)
+}
+func cBytes(i int) string {
+	if i > 255 {
+		i = 255
+	}
+	b := []byte{'1', '2', byte(i)}
+	return string(b)
+}
+
+func cRunes(i int) string {
+	r := []rune{'1', '2', rune(i)}
+	return string(r)
+}
+func convert(fn converter, mult int) {
+	start := time.Now()
+	max := 1500 * mult
+	for i := 1; i < max; i++ {
+		fn(i * mult)
+	}
+	fmt.Println("Final representation:", fn(max*mult), "iterations:", max)
+	end := time.Now()
+	fmt.Println("Process took", end.Sub(start))
+}
+
+// ExampleConversionCosts times and converts types into strings
 func ExampleConversionCosts() {
 	// Conversions to and from numbers and strings may change the representation
 	// but will have some run-time cost.
 	// Other conversions will change the type but not the representation.
 	start := time.Now()
-	convert(cFloat32, 14)
-	convert(cString, 1)
+	convert(cFloat32, 8)
+	convert(cFloat64, 8)
+	convert(cString, 2)
+	convert(cBytes, 2)
+	convert(cRunes, 3)
 	end := time.Now()
-	fmt.Println("Process took", end.Sub(start))
+	fmt.Println("Total process took", end.Sub(start))
 }
-
-func cFloat32(i int) string {
-	fmt.Println("float", float32(i))
-	return strconv.Itoa(i)
-}
-func cString(i int) string {
-	fmt.Println("string", string(byte(i)))
-	return string(byte(i))
-}
-
-func convert(funky func(int) string, mult int) {
-	for i := 0; i == 100; i++ {
-		fmt.Println(funky(i * mult))
-	}
-}
-
-// the only implicit conversion is from an untyped constant into a required type
-const exampleImplicit = 1
-
-// Go language is strongly typed which means you need declare a type implicitly or explicitly
-// It's strict when it comes to types and will report errors during compilation.
-
-type customString string
-
-// Constants can be untyped and can be manipulated by assuming a type
-// don't get to clever with this because assigning an untyped float64 constant into a float32 variable for example could cause problems
-const (
-	cstring               = "my string"
-	cint                  = 1
-	cstring2 customString = "hello"
-)
 
 func ExampleAliasing() {
 	// golang uses
@@ -100,6 +137,12 @@ func ExamplePointerConversion() {
 	// but IntPtr can be converted indirectly
 	var _ MyIntPtr = (*MyInt)((*int)(ip))  // indirectly achieved
 	var _ = MyIntPtr((*MyInt)((*int)(ip))) // indirectly achieved
+
+	x := 123
+	y := &x
+	castingStyle := (*int)(y)
+	typicalConversion := int(*y) // this is equivalent to above but this looks more idiomatic
+	fmt.Println(*castingStyle, typicalConversion)
 }
 
 func ExampleConversions() {
@@ -168,5 +211,4 @@ func ExampleConversions() {
 	//	var p *int
 	//	(*int(n))
 	// t := 2 * time.Second is the same as t := time.Duration(2) * time.Second since types cannot be mixed and in this case can only multiple time.Duration
-
 }

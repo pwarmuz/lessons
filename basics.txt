@@ -1,0 +1,187 @@
+// RESTful applications
+
+1) REST stands for REpresentational State Transfer. Server transfers a representation of the state of the requested resource. 
+2) Separation of Client and Server
+3) Statelessness. Server and client do know know anything about the state each is in. Statelessness is enforced through the use of resources. 
+	REST systems interact through standard operations on resources; GET, POST, PUT, DELETE
+	These constraints help RESTful applications achieve reliability, performance, scalability because components can be managed, updated, and reused without affecting the system as a whole.
+4) REST requires a request to be made by a client. Define what operation to perform (GET, POST, PUT, DELETE). Header of information to pass along. Path to resource. Optional body containing data.
+
+
+// Go Experience expectations
+- Go dependency management tools
+- Git and semantic versioning
+- Understanding Scripts and Repos
+- Go Libraries
+- SQL & Relational DB fundamentals
+- Basic Auth
+- HTTP/HTTPS, Web Frameworks (REST) and routers 
+
+// Go testing Experience
+- https://github.com/onsi/ginkgo - https://github.com/stretchr/testify - https://labix.org/gocheck
+- Unit testing
+- Integration testing
+- Behavior testing 
+- E2E testing (End to end testing) This simulates the end user's experience by using real scenarios and validates the system for integration and data integrity.
+	- Expanded test coverage, Ensures correctness of application, Reduces bugs by detecting them.
+
+// Design Patterns
+- Structural (adapter, bridge, decorator)
+- Creational (builder, factory, singleton)
+- Behavioral (iterator, observer, command)
+- Concurrency
+- Stability
+
+-- Creational
+Singleton limits creation of a class, struct or object to only one instance. This global instance of the object can be used throughout the system.
+This is achieved by having a private constructor of the object. 
+In Go you can achieve this with an empty struct, implement methods for that struct, and manipulate global variables.
+
+Factory produces objects and the factory function signature ensures consistency in supplying the correct attributes. This is a wrapper function and returns the object within that function.
+
+Builder pattern is used to build objects. It generally builds more complex objects and contains more methods to build it until a final result is required.
+Difference between builder and abstract factory is the builder creates the object step by step whereas an abstract factory returns a product immediately.
+
+-- Structural
+Adapter creates a conversion between incompatible classes so they interface with each other. Adapters allow for communication and translation between two objects.
+
+
+-- Behavioral
+Observer pattern is a one-to-many dependency between objects so when the subject changes states the dependents (observers) are notified.
+
+State pattern encapsulates various states a machine can be in and alters it's behavior when the internal state changes. 
+
+Strategy pattern groups related algorithms under abstraction which allows switching algorithms or policies for another without modifying a client.
+
+// Basic information and questions relating to Go
+The shorthand operator is := which is a colon then equals sign
+
+1) Benefits of Go?
+- Optimized for concurrency with lightweight goroutines that are significancy lighter than real threads
+- Works well at scale and designed for systems engineering
+- Easily readable with a standard code format
+- Automatic and efficient garbage collection because it executes concurrently with application
+
+2) Types:
+		Numeric:
+			uint8 / uint16 / uint32 / uint64
+			int8 / int16 / int32 / int64
+			float64 / float32
+			complex64 / complex128
+			byte alias for uint8
+			rune alias for int32
+
+			uint - either 32 or 64 bits based on compilation architecture
+			int - same size as uint
+			uintptr - unsigned int large enough to store bits for pointer value
+
+		Method
+		Boolean
+		String
+		Array
+		Struct
+		Pointer  *	
+ 		Interface *
+		Channel *
+		Function *#
+		Slice *#
+		Map *#
+		- * denotes can be assigned Nil
+		- # denotes it does not support comparison
+
+3) Packages are directories within the Go workspace that contain source files or other packages. Source files must belong to some package.
+	Packages are declared as <package <packagename>> and importing as <import <packagename>>
+
+4) Conversion type support? Go supports explicit type conversion to satisfy it's strict typing
+	?? gotcha questions: Go does not support
+			- function or operator overloading
+			- implicit conversions to avoid bugs
+			- classes or type inheritance
+			- variant types
+			- dynamic code loading or dynamic libraries
+			- assertions or immutable variables
+
+5) What is a goroutine? function, including an anonymous function, or method that executes code concurrently along with other goroutine threads. They are lightweight about 2kb and can spawn thousands at once with less memory usage than traditional threads like Java. Syntax is <go f()> or <go func(){}()> as anonymous.
+You can stop a goroutine by sending it a signal channel to quit. You can use a waitgroup and finish it when it reaches wg.Done(). The goroutine will end when main ends.
+Concurrency is handling multiple tasks independently but parallelism is handling them in parallel with each other.
+How to stop it?
+
+
+6) How do I check a type at runtime? A type switch is a quick way which will evaluate the variable by type rather than value. Switches contain cases which act as conditional statements with a default case if none are true. 
+
+7) How do you concatenate strings? Easiest way is with + operator which will add strings but this creates a new copy and reallocates memory. Using strings.Join concatenates with a separator. Using strings.Builder reduces the memory allocation and is more optimal approach.
+
+8) Explain the steps of testing with Golang? Go supports tests by appending _test.go to a file along with <Test<FunctionName>> function within the same package of the function you are testing. Using go test command to run the test. 
+
+9) Function closures are functions that are returned from within a function and are able to access variables outside of the returned function but still within it's scope.
+
+10) Golang supports some Object Oriented concepts but it does not support inheritance because there are no classes. Composition is allowed and a struct can be embedded within another struct as a composition. The outer struct would have access to the methods of the embedded struct. Methods would become promoted if the embedded struct has no name.
+
+11) Interfaces are a type that define a set of method signatures but do not provide implementations. Any type that implements the interface method fulfills that interface type. Interfaces can also be used as a placeholder type for methods that will have multiple implementations.
+
+12) Lvalue
+		- refers to memory location, represents variable identifier, mutable, may appear on left or right side of = operator. 
+	Rvalue
+		- represents data stored in memory, represents constant value, always appears on right side of = operator.
+	e.g. x=20 x is Lvalue, 20 is Rvalue
+
+13) What are the looping constructs in Go? The only looping construct is the For loop. The For loop has 3 components separated by semicolons.
+		- Init statement, which is optional and executed before the loop begins. Variable declaration only visible within the scope of the loop. 
+		- Condition expression, evaluated as a boolean before each iteration to determine if loop continues
+		- Post statement, which is optional and executes at the end of each iteration
+	as a while loop: for sum:=1; sum < 1000{ sum+= sum}
+	as infinite loop: for {}
+
+14) Go accepts multiple return values from a function which as separated by commas. It's idiomatic to returns errors last.
+
+15) LIFO: Last In, First Out. Also called a Stack. Implements a stack structure with pop, push, and peek. 
+
+16) FIFO: First In, First Out. Also called a Queue. Implements a queue structure with dequeue, enqueue
+
+17) Easiest way to find if a slice is empty is to use len() built-in function which returns the length of the slice. if len(slice) == 0{}
+
+18) Easiest way to format string without printing to output is the string formatter fmt.Sprintf() function which returns a string.
+
+19) Go workspaces are a location where version controlled repositories are stored, generally with many packages within each repo, where each package consists of one or more source Go source files. The workspace contains src directory where source files are located and bin directory where executable commands are found.
+
+20) CGO allows the creation of Go packages with C code if you need to implement C code.
+
+21) Shadow variables are variables that are re-declared within inner scope block.
+   n := 0
+   if true {
+      n := 1
+      n++
+   }
+   fmt.Println(n) // 0
+You can use this vet tool to attempt to find shadow variables
+		go install golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow
+		go vet -vettool=$(which shadow)
+
+22) GOPATH is an environment variable that specifies the location of your workspace 
+
+23) Everything in Go is passed by value. Even a pointer passes the value of the address. In Go, pointers are used for efficiency because everything in Go is passed by value so they let us pass an address where data is held instead of passing the data’s value, to avoid unintentionally changing data, and so we can access an actual value in another function and not just a copy of it when we want to mutate it.
+
+24) How are pointers used in Go? 
+	- To mutate a variable as an argument it needs to be passed as a pointer. 
+	- To point to large structs of data instead of copying data as an argument. 
+	- As an idiom in Go where methods within a struct that have 1 pointer receiver should have all pointer receivers for the remaining methods.
+	- Since pointers can be nil you can use a pointer to a type to signify the absence of a value, but nil reference is generally a bad idea if implemented sloppy. 
+	- Pointers are not necessarily faster than using values since Go is garbage collected and creates some overhead for escape analysis to figure out if the variable should be stored on the heap or stack, when stored on the heap you lose time when the GC is running.
+
+25) What types of pointers does Go have? 
+	- any type that uses a * (star) operator before it becomes a pointer type. This stores the memory address of the value.
+	- The & (ampersand) operator generates a pointer to the operand of the memory address
+	- You can dereference (use indirection) using a * operator on the variable of a pointer.
+	- There is no pointer arithmetic.
+
+26) is Go considered an OO language? Yes and no. It does allow for an OO style of programming. There is no type hierarchy which makes objects in Go feel more lightweight than other languages. You can embed data to facilitate composition of data as there is no inheritance. Methods can be defined for any data type as well as structs. Go was designed to use concepts from procedural, functional and OO programming with an direction towards systems programming. Interfaces provide polymorphism in a unique approach which encourage a short list of method signatures that are part of an interface.
+
+27) Exceptions and handling errors in Go? Go does not support exceptions. It handles errors by returning them through functions. Go also allows error manipulation through the errors interface.
+
+28) Initialize a struct:
+- Define a new struct with <var variableName structName>, this will have a default zero value for each field
+	- Access and assign with . (dot) operator such as variableName.fieldName
+- Define a new pointer struct with <var variableName *structName> and then used new() function to assign it to the variable as <variableName = new(structName)>
+	- This is equivalent to a struct literal assignment of <variableName = &structName{0,""}> with field assignments or default it as <variableName = &structName{}>
+- Assign a struct literal to a variable with the shorthand operator such as <variableName := structName{fieldName:value}> or default valued <variableName := structName{}>
+or address of the struct literal with <variableName := &structName{}>

@@ -18,7 +18,7 @@ package main
 // git tag -l v1.0.0-b* or git tag -l *beta*
 import (
 	"fmt"
-	"lessons/modules/structs"
+	"lessons/modules/algorithms"
 )
 
 // Intro Go is a general purpose language intended for systems programming.
@@ -55,6 +55,7 @@ func main() {
 	//algorithms.ExampleConversions()
 	//functions.SortingSlice()
 	//conversions.ExampleConversionCosts()
+	//conversions.ExampleNumericConversions()
 	//functions.ExampleByValueAndReference()
 	//concurrency.ExampleUnbufferedChan()
 	//concurrency.ExampleBufferedChan()
@@ -74,9 +75,13 @@ func main() {
 	//types.ExampleEmbed()
 	//interfaces.ExampleAssertion()
 	//interfaces.ExampleErrorPanicRecovery()
-	structs.ExamplePointerVsValue()
+	//structs.ExamplePointerVsValue()
 	//structs.ExampleImplementation()
 	//types.ExampleSliceAddressPtrs()
+
+	//algorithms.ExampleRecursiveFunctions()
+	//algorithms.ExamplePermutations()
+	algorithms.ExampleCommandPattern()
 }
 
 func IntMin(a, b int) int {

@@ -9,7 +9,9 @@ import (
 // -isolate data
 // -wrapping functions to create middleware
 // -access data without needing to create global variables via middleware
-//
+// -implement sort.Search as a binary search (algorithm used to search a sorted list) using closures
+//      O(1,000,000) = log10(1,000,000)/log10(2) = 19.93 maximum searchs to find an item within 1,000,000 sorted list
+// -defer promised work via goroutine and anonymous function. This is not very relevant but you can read about it here https://www.calhoun.io/5-useful-ways-to-use-closures-in-go/
 func timingPtr(f func(*[]int) *[]int) func(*[]int) *[]int {
 	return func(si *[]int) *[]int {
 		start := time.Now()

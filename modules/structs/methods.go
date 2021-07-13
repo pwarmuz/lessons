@@ -3,8 +3,12 @@ package structs
 import (
 	"fmt"
 	"lessons/modules/interfaces"
+	"unsafe"
 )
 
+// When you pass a value to a function or method, a copy is made and passed.
+// If you pass a string to a function, only the structure describing the string will be copied and passed, since strings are immutable.
+// Same is true if you pass a slice (slices are also descriptors). Passing a slice will make a copy of the slice descriptor but it will refer to the same underlying array.
 type arithmetic struct {
 	a, b int
 }
@@ -206,8 +210,8 @@ func (c *Cat) Rename(name string) {
 func ExamplePointerVsValue() {
 	// https://npf.io/2014/05/intro-to-go-interfaces/ has some good information on this, most of it is covered here
 	dog := Dog{"Beanie", "Water"}
-	dog.Rename("Bernie")
-	fmt.Println(dog) // will not print the custom string
+	dog.Rename("Bernie") // since the composite literal is a value and the method has a pointer receiver, Go will treat dog.Rename as (&dog).Rename so it automatically works
+	fmt.Println(dog)     // will not print the custom string because the String method has pointer receiver and .String() is not explicitly called
 	// As written in Effective Go, The rule about pointers vs. values for receivers is that value methods can be invoked on pointers and values, but pointer methods can only be invoked on pointers. This is because pointer methods can modify the receiver; invoking them on a copy of the value would cause those modifications to be discarded.
 	// This this important in relation to fulfilling interfaces, as seen when the stringer interface was not fulfilled because the String method for Dog type used a pointer receiver
 	fmt.Println(dog.Walk("500"))
@@ -217,9 +221,9 @@ func ExamplePointerVsValue() {
 	w := NewWalker(notADog)
 	fmt.Println(Walking(w)) // Walker is nil
 	dogPtr := &dog
-	fmt.Println(dogPtr, "pointer as dogPtr") // works because it's a pointer
-	fmt.Println(&dog, "pointer as &dog")     // works because it's a pointer
-	fmt.Println(dog.String(), "explicit method called")
+	fmt.Println(dogPtr, "pointer as dogPtr")            // works because it's a pointer
+	fmt.Println(&dog, "pointer as &dog")                // works because it's a pointer
+	fmt.Println(dog.String(), "explicit method called") // works because as mentioned earlier Go will treat this as (&dog).String()
 	cat := Cat{"Sanders", "Siamese"}
 	cat.Rename("Bonkers")
 	fmt.Println(cat, "5")
@@ -255,19 +259,25 @@ func ExamplePointerVsValue() {
 		fmt.Println("Anon func", i)
 	}
 	anonFuncPtr := func(i *fmt.Stringer) { // this *fmt.Stringer is a concrete type. just like []interface{} is a concrete type.
-		fmt.Println("Anon func", *i) // pointer to i is needed to see the string values
+		fmt.Println("Anon func Ptr", *i) // pointer to i is needed to see the string values
 	}
 	someCat := Cat{"Assigned to var fmtStringer", "Water"}
 	anonFunc(someDog)
 	anonFunc(someCat)
 	anonFunc(fmtStringer) // since fmtString was last converted to a Cat it will be a cat breed
 	// anonFunc(Dog(someCat)) // this is analogous to what was mentioned with *****. Cannot use Dog as fmt.Stringer value in argument because missing method String with a value receiver.
-	var fmtStringerDog fmt.Stringer = someDog
-	var fmtStringerCat fmt.Stringer = someCat
-	anonFuncPtr(&fmtStringerDog) // cannot use someDog unless it is explicitly a fmt.Stringer type, *Dog is assigned to fmtStringerDog as a value and still needs to be dereferenced
-	anonFuncPtr(&fmtStringerCat) // cannot use someCat unless it is explicitly a fmt.Stringer type, Cat is assigned to fmtStringerCat as a value and still needs to be dereferenced
+	var fmtStringerDogPtr fmt.Stringer = someDog  // someDog needs to be a pointer to fulfil the pointer receiver method
+	var fmtStringerCat fmt.Stringer = someCat     //someCat can be a value or pointer and still fulfill the value receiver method
+	var fmtStringerCatPtr fmt.Stringer = &someCat //someCat can be a value or pointer and still fulfill the value receiver method
+	anonFuncPtr(&fmtStringerDogPtr)               // cannot use someDog unless it is explicitly a fmt.Stringer type, *Dog is assigned to fmtStringerDog as a value and still needs to be dereferenced
+	anonFuncPtr(&fmtStringerCat)                  // cannot use someCat unless it is explicitly a fmt.Stringer type, Cat is assigned to fmtStringerCat as a value and still needs to be dereferenced
+	anonFuncPtr(&fmtStringerCatPtr)               // cannot use someCat unless it is explicitly a fmt.Stringer type, Cat is assigned to fmtStringerCat as a value and still needs to be dereferenced
 }
 
+type admin struct {
+	ID int
+	Me user
+}
 type user struct {
 	name  string
 	likes int
@@ -297,4 +307,129 @@ func ExamplePointerAndValue() {
 		user.notify()
 	}
 
+	admin := admin{
+		12345,
+		user{
+			"john",
+			23,
+		},
+	}
+	admin.Me.addLike()
+	admin.Me.notify()
+}
+
+// emptyStruct has various benefits
+// an empty Struct is of size zero and all empty structs point to the same location
+// methods can be defined on it
+// implement an interface to it since you can use methods
+// as a singleton and achieved by:
+// 	- store all data in global variables
+//    - there is only 1 instance of the type since all empty structs are interchangeable
+type emptyStruct struct{}
+
+func (e emptyStruct) Strings() string {
+	return "I will always return this"
+}
+
+func ExampleSizeOfStruct() {
+	// The value's width is always a multiple of it's alignment
+	// How it is ordered within the structure IS important in how the memory becomes allocated
+	type S1 struct {
+		a int8  // 1 (it's bytes)
+		b int16 // 2
+		c int32 // 4
+		d int64 // 8
+
+	}
+	/* where xx is empty but needed to fulfil a multiple of it's alignment, it is not a sum of all sizes
+	where 08 represents int8 / 16 = int16 / 32 = int32 / 64 = int64
+	[08][16][16][32][32][32][32][xx] 8
+	[64][64][64][64][64][64][64][64] 16
+	*/
+	var s1 S1
+	fmt.Println(unsafe.Sizeof(s1)) // prints 16
+
+	type S2 struct {
+		a int64 // 8 (it's bytes)
+		b int64 // 8
+		c int64 // 8
+		d int64 // 8
+
+	}
+	/* where xx is empty but needed to fulfil a multiple of it's alignment, it is not a sum of all sizes
+	[64][64][64][64][64][64][64][64] 8
+	[64][64][64][64][64][64][64][64] 16
+	[64][64][64][64][64][64][64][64] 24
+	[64][64][64][64][64][64][64][64] 32
+	*/
+	var s2 S2
+	fmt.Println(unsafe.Sizeof(s2)) // prints 32
+
+	type S3 struct {
+		a int32 // 4 (it's bytes)
+		b int32 // 4
+		c int32 // 4
+		d int64 // 8
+
+	}
+	/* where xx is empty but needed to fulfil a multiple of it's alignment, it is not a sum of all sizes
+	[32][32][32][32][32][32][32][32] 8
+	[32][32][32][32][xx][xx][xx][xx] 16
+	[64][64][64][64][64][64][64][64] 24
+	*/
+	var s3 S3
+	fmt.Println(unsafe.Sizeof(s3)) // prints 24
+
+	type S4 struct {
+		a int32 // 4 (it's bytes)
+		b int32 // 4
+		c int32 // 4
+		d int8  // 1
+		e int8  // 1
+		f int64 // 8
+	}
+	/* where xx is empty but needed to fulfil a multiple of it's alignment, it is not a sum of all sizes
+	[32][32][32][32][32][32][32][32] 8
+	[32][32][32][32][08][08][xx][xx] 16
+	[64][64][64][64][64][64][64][64] 24
+	*/
+	var s4 S4
+	fmt.Println(unsafe.Sizeof(s4)) // prints 24
+
+	type S5 struct {
+		a int32 // 4 (it's bytes)
+		b int32 // 4
+		c int32 // 4
+		d int64 // 8
+		f int8  // 1
+		g int8  // 1
+		h int16 // 2
+
+	}
+	/* where xx is empty but needed to fulfil a multiple of it's alignment, it is not a sum of all sizes
+	[32][32][32][32][32][32][32][32] 8
+	[32][32][32][32][xx][xx][xx][xx] 16
+	[64][64][64][64][64][64][64][64] 24
+	[08][08][16][16][xx][xx][xx][xx] 32
+	*/
+	var s5 S5
+	fmt.Println(unsafe.Sizeof(s5)) // prints 32 Notice how the memory allocated between S5 and S6!
+
+	type S6 struct {
+		a int32 // 4 (it's bytes)
+		b int32 // 4
+		c int32 // 4
+		d int8  // 1
+		e int8  // 1
+		f int16 // 2
+		g int64 // 8
+
+	}
+	/* where xx is empty but needed to fulfil a multiple of it's alignment, it is not a sum of all sizes
+	[32][32][32][32][32][32][32][32] 8
+	[32][32][32][32][08][08][16][16] 16
+	[64][64][64][64][64][64][64][64] 24
+	*/
+	var s6 S6
+	fmt.Println(unsafe.Sizeof(s6)) // prints 24 Notice how the memory allocated between S5 and S6!
 }
